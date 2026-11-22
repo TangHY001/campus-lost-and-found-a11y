@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { ElMessageBox } from 'element-plus'
 import { describeError } from '@/api/feedback'
 import { listOwnItems, withdrawItem, type ItemRecord } from '@/api/items'
@@ -26,6 +26,8 @@ async function load() {
 }
 async function withdraw(item: ItemRecord) {
   if (busyId.value) return
+  // 记录触发按钮：弹窗关闭后要把焦点还回去，否则键盘用户会“掉”到页面顶部
+  const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null
   busyId.value = item.id
   try {
     await ElMessageBox.confirm(
@@ -43,6 +45,10 @@ async function withdraw(item: ItemRecord) {
     if (error !== 'cancel' && error !== 'close') errorMessage.value = describeError(error)
   } finally {
     busyId.value = ''
+    await nextTick()
+    // 按钮还在（取消/失败）就还原焦点；物品已下架时按钮消失，则把焦点交给主内容区
+    if (trigger?.isConnected) trigger.focus()
+    else document.getElementById('main-content')?.focus()
   }
 }
 onMounted(load)
@@ -61,7 +67,12 @@ onMounted(load)
       <p>编号 {{ item.id }} · {{ ITEM_STATUS_LABELS[item.status] }} · {{ item.occurredDate }}</p>
       <p>{{ item.description }}</p>
       <div class="images">
-        <img v-for="image in item.images" :key="image.id" :src="image.url" alt="物品图片" />
+        <img
+          v-for="image in item.images"
+          :key="image.id"
+          :src="image.url"
+          :alt="`${item.title} 的物品图片`"
+        />
       </div>
       <el-alert
         v-if="item.reviewReason"

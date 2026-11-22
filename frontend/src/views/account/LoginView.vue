@@ -62,22 +62,27 @@ async function submit() {
         :model="form"
         :rules="rules"
         label-position="top"
+        hide-required-asterisk
         @submit.prevent="submit"
       >
-        <el-form-item label="账号" prop="account">
+        <el-form-item prop="account">
+          <template #label>账号<span class="required-mark" aria-hidden="true">*</span></template>
           <el-input
             v-model="form.account"
             placeholder="学号 / 校园卡号"
             autocomplete="username"
+            aria-required="true"
             maxlength="32"
           />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item prop="password">
+          <template #label>密码<span class="required-mark" aria-hidden="true">*</span></template>
           <el-input
             v-model="form.password"
             type="password"
             show-password
             autocomplete="current-password"
+            aria-required="true"
             maxlength="64"
           />
         </el-form-item>

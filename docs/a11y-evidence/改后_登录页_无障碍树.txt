@@ -1,0 +1,66 @@
+RootWebArea "登录 · 校园失物招领" {focusable=true}
+  generic
+    link "跳到主内容" {focusable=true}
+      StaticText "跳到主内容"
+        InlineTextBox "跳到主内容"
+    banner
+      link "校园失物招领" {focusable=true}
+        StaticText "校园失物招领"
+          InlineTextBox "校园失物招领"
+      navigation "主导航"
+        link "首页" {focusable=true}
+          StaticText "首页"
+            InlineTextBox "首页"
+        link "浏览物品" {focusable=true}
+          StaticText "浏览物品"
+            InlineTextBox "浏览物品"
+        link "发布信息" {focusable=true}
+          StaticText "发布信息"
+            InlineTextBox "发布信息"
+      link "登录" {focusable=true}
+        button "登录" {invalid=false focusable=true}
+          StaticText "登录"
+            InlineTextBox "登录"
+    main {focusable=true focused=true}
+      generic
+        heading "登录" {level=1}
+          StaticText "登录"
+            InlineTextBox "登录"
+        form
+          LabelText
+            StaticText "账号"
+              InlineTextBox "账号"
+          generic
+            generic
+              generic {focusable=true}
+                textbox "账号" {invalid=false focusable=true readonly=false required=true}
+                  generic
+          LabelText
+            StaticText "密码"
+              InlineTextBox "密码"
+          generic
+            generic
+              generic {focusable=true}
+                textbox "密码" {invalid=false focusable=true readonly=false required=true}
+                  generic
+          button "登录" {invalid=false focusable=true}
+            StaticText "登录"
+              InlineTextBox "登录"
+        paragraph
+          StaticText "还没有账号？"
+            InlineTextBox "还没有账号？"
+          link "去注册" {focusable=true}
+            StaticText "去注册"
+              InlineTextBox "去注册"
+    status {live=polite atomic=true}
+      StaticText "登录页面已加载"
+        InlineTextBox "登录页面已加载"
+  generic
+    generic
+      generic
+      generic
+        generic "Toggle devtools panel" (desc="Toggle Vue DevTools")
+          image
+        generic (desc="Toggle Component Inspector")
+          image
+  generic

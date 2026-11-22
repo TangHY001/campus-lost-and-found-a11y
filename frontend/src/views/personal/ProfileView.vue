@@ -259,6 +259,7 @@ onBeforeUnmount(() => clearInterval(timer))
         :model="profileForm"
         :rules="profileRules"
         label-position="top"
+        hide-required-asterisk
         @submit.prevent="saveProfile"
       >
         <el-form-item label="昵称（公开显示）" prop="nickname">
@@ -289,14 +290,27 @@ onBeforeUnmount(() => clearInterval(timer))
         :model="emailForm"
         :rules="emailRules"
         label-position="top"
+        hide-required-asterisk
         @submit.prevent="saveEmail"
       >
-        <el-form-item label="新邮箱" prop="email">
-          <el-input v-model="emailForm.email" maxlength="254" autocomplete="email" />
+        <el-form-item prop="email">
+          <template #label>新邮箱<span class="required-mark" aria-hidden="true">*</span></template>
+          <el-input
+            v-model="emailForm.email"
+            maxlength="254"
+            autocomplete="email"
+            aria-required="true"
+          />
         </el-form-item>
-        <el-form-item label="验证码" prop="emailCode">
+        <el-form-item prop="emailCode">
+          <template #label>验证码<span class="required-mark" aria-hidden="true">*</span></template>
           <div class="code-row">
-            <el-input v-model="emailForm.emailCode" maxlength="6" inputmode="numeric" />
+            <el-input
+              v-model="emailForm.emailCode"
+              maxlength="6"
+              inputmode="numeric"
+              aria-required="true"
+            />
             <el-button :loading="emailSending" :disabled="countdown > 0" @click="sendEmailCode">
               {{ countdown > 0 ? `${countdown} 秒后重发` : '获取验证码' }}
             </el-button>
@@ -325,33 +339,42 @@ onBeforeUnmount(() => clearInterval(timer))
         :model="passwordForm"
         :rules="passwordRules"
         label-position="top"
+        hide-required-asterisk
         @submit.prevent="savePassword"
       >
-        <el-form-item label="原密码" prop="oldPassword">
+        <el-form-item prop="oldPassword">
+          <template #label>原密码<span class="required-mark" aria-hidden="true">*</span></template>
           <el-input
             v-model="passwordForm.oldPassword"
             type="password"
             show-password
             maxlength="64"
             autocomplete="current-password"
+            aria-required="true"
           />
         </el-form-item>
-        <el-form-item label="新密码" prop="newPassword">
+        <el-form-item prop="newPassword">
+          <template #label>新密码<span class="required-mark" aria-hidden="true">*</span></template>
           <el-input
             v-model="passwordForm.newPassword"
             type="password"
             show-password
             maxlength="64"
             autocomplete="new-password"
+            aria-required="true"
           />
         </el-form-item>
-        <el-form-item label="确认新密码" prop="confirmPassword">
+        <el-form-item prop="confirmPassword">
+          <template #label
+            >确认新密码<span class="required-mark" aria-hidden="true">*</span></template
+          >
           <el-input
             v-model="passwordForm.confirmPassword"
             type="password"
             show-password
             maxlength="64"
             autocomplete="new-password"
+            aria-required="true"
           />
         </el-form-item>
         <p class="hint">修改成功后，所有设备上的登录都会失效，需要用新密码重新登录。</p>

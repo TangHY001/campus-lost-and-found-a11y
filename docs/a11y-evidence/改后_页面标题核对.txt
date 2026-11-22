@@ -1,0 +1,1 @@
+item-detail    /items/33        title="物品详情 · 校园失物招领" h1="校园卡（无障碍测试数据）" lang=zh-CN

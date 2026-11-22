@@ -54,7 +54,7 @@ watch(
           v-for="(image, index) in item.images"
           :key="image.id"
           :src="image.url"
-          :alt="`物品图片 ${index + 1}`"
+          :alt="`${item.title} 的物品图片 ${index + 1}`"
         />
       </div>
     </article>

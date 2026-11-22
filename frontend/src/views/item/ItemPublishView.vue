@@ -126,9 +126,8 @@ async function submit() {
       : await createItem(payload, attempt.key)
     publishedId.value = item.id
     publishedStatus.value = item.status
-    void ElMessageBox.alert('已提交，等待审核', '提交成功', { confirmButtonText: '知道了' }).catch(
-      () => {},
-    )
+    const message = item.status === 'PENDING_REVIEW' ? '已提交，等待审核' : '已提交'
+    void ElMessageBox.alert(message, '提交成功', { confirmButtonText: '知道了' }).catch(() => {})
   } catch (error) {
     errorMessage.value = describeError(error)
   } finally {
@@ -155,19 +154,22 @@ function startNewItem() {
       type="success"
       :closable="false"
     >
-      <p>物品编号 {{ publishedId }}。当前状态为{{ ITEM_STATUS_LABELS[publishedStatus] }}。</p>
-      <el-button type="primary" disabled>已提交</el-button>
-      <RouterLink :to="{ name: 'my-items' }">查看我的发布</RouterLink>
-      <el-button v-if="!editing" @click="startNewItem">发布另一条</el-button>
+      <p>物品编号 {{ publishedId }} · {{ ITEM_STATUS_LABELS[publishedStatus] }}</p>
+      <div class="success-actions">
+        <el-button type="primary" disabled>已提交</el-button>
+        <RouterLink class="published-link" :to="{ name: 'my-items' }">查看我的发布</RouterLink>
+        <el-button v-if="!editing" @click="startNewItem">发布另一条</el-button>
+      </div>
     </el-alert>
     <form v-else-if="!loading && !loadFailed" @submit.prevent="submit">
       <fieldset :disabled="submitting || uploading">
-        <p>以下各项均为必填。公开内容请勿填写手机号、邮箱或社交账号。</p>
+        <p class="form-hint">文字和日期为必填，图片可选。请勿填写手机号、邮箱或社交账号。</p>
         <label>
           信息类型
           <el-select
             v-model="form.type"
             aria-label="信息类型"
+            aria-required="true"
             :disabled="editing || submitting || uploading"
           >
             <el-option
@@ -180,7 +182,7 @@ function startNewItem() {
         </label>
         <label>
           物品类别
-          <el-select v-model="form.category" aria-label="物品类别">
+          <el-select v-model="form.category" aria-label="物品类别" aria-required="true">
             <el-option
               v-for="(label, value) in CATEGORY_LABELS"
               :key="value"
@@ -190,13 +192,19 @@ function startNewItem() {
           </el-select>
         </label>
         <label for="item-title">标题（1～50 字）</label>
-        <el-input id="item-title" v-model="form.title" />
+        <el-input id="item-title" v-model="form.title" aria-required="true" />
         <label for="item-location">发生地点（1～50 字）</label>
-        <el-input id="item-location" v-model="form.location" />
+        <el-input id="item-location" v-model="form.location" aria-required="true" />
         <label for="item-date">发生日期</label>
         <input id="item-date" v-model="form.occurredDate" type="date" required />
         <label for="item-description">物品描述（10～500 字）</label>
-        <el-input id="item-description" v-model="form.description" type="textarea" :rows="5" />
+        <el-input
+          id="item-description"
+          v-model="form.description"
+          type="textarea"
+          :rows="5"
+          aria-required="true"
+        />
         <ItemImagePicker v-model="pictures" :disabled="submitting" @busy="uploading = $event" />
       </fieldset>
       <el-alert v-if="errorMessage" :title="errorMessage" type="error" :closable="false" />
@@ -237,8 +245,22 @@ form label .el-select {
 form .el-button {
   justify-self: start;
 }
+.form-hint {
+  margin: 0;
+}
+.success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.published-link {
+  color: var(--el-color-primary);
+  text-decoration: underline;
+}
 input[type='date'] {
   min-height: 32px;
+  min-width: 0;
   padding: 4px 8px;
   font: inherit;
 }

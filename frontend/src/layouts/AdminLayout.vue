@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { showError } from '@/api/feedback'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 async function logout() {
   try {
@@ -19,10 +20,12 @@ async function logout() {
 
 <template>
   <div class="admin-layout">
-    <aside class="sidebar">
+    <aside class="sidebar" aria-label="管理侧栏">
       <RouterLink to="/admin" class="brand">管理后台</RouterLink>
-      <nav class="menu">
-        <RouterLink to="/admin">概览</RouterLink>
+      <nav class="menu" aria-label="管理导航">
+        <RouterLink to="/admin" :aria-current="route.name === 'admin-home' ? 'page' : undefined"
+          >概览</RouterLink
+        >
         <!-- 管理模块负责人在这里加入口，例如 /admin/items 待审核列表 -->
       </nav>
       <div class="sidebar-footer">
@@ -31,7 +34,7 @@ async function logout() {
         <el-button link @click="logout">退出</el-button>
       </div>
     </aside>
-    <main class="content">
+    <main id="main-content" tabindex="-1" class="content">
       <RouterView />
     </main>
   </div>

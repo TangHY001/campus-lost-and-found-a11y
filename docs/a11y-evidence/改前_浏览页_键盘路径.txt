@@ -1,0 +1,22 @@
+ 1. a role=- name="校园失物招领" outline=auto/1px
+ 2. a role=- name="首页" outline=auto/1px
+ 3. a role=- name="浏览物品" outline=auto/1px
+ 4. a role=- name="发布信息" outline=auto/1px
+ 5. a role=- name="登录" outline=auto/1px
+ 6. button[button] role=- name="登录" outline=solid/2px
+ 7. input[text] role=- name="关键词" outline=none/3px #el-id-6410-15
+ 8. input[text] role=combobox name="类型" outline=none/3px #el-id-6410-16
+ 9. input[text] role=combobox name="类别" outline=none/3px #el-id-6410-17
+10. input[text] role=- name="地点" outline=none/3px #el-id-6410-18
+11. input[date] role=- name="" outline=auto/1px
+12. input[date] role=- name="" outline=none/3px
+13. input[date] role=- name="" outline=auto/1px
+14. input[date] role=- name="" outline=none/3px
+15. button[submit] role=- name="搜索" outline=solid/2px
+16. button[button] role=- name="重置筛选" outline=solid/2px
+17. BODY(焦点丢失) role=- name="undefined" outline=undefined
+18. a role=- name="校园失物招领" outline=auto/1px
+19. a role=- name="首页" outline=auto/1px
+20. a role=- name="浏览物品" outline=auto/1px
+21. a role=- name="发布信息" outline=auto/1px
+22. a role=- name="登录" outline=auto/1px

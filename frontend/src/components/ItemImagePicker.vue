@@ -39,7 +39,7 @@ async function choose(event: Event) {
 
 <template>
   <div class="image-picker">
-    <p>图片（可选，最多三张 JPG/PNG，每张不超过 2 MB）</p>
+    <label for="item-images">图片（可选，最多三张 JPG/PNG，每张不超过 2 MB）</label>
     <p class="hint">请遮挡姓名、卡号等隐私信息，图片与文字一起等待审核。</p>
     <div class="previews">
       <div v-for="(image, index) in images" :key="image.id">
@@ -52,6 +52,7 @@ async function choose(event: Event) {
       </div>
     </div>
     <input
+      id="item-images"
       type="file"
       accept="image/jpeg,image/png"
       multiple
@@ -73,12 +74,17 @@ async function choose(event: Event) {
 .previews > div {
   display: grid;
   gap: 6px;
+  max-width: 100%;
 }
 img {
   width: 140px;
+  max-width: 100%;
   height: 110px;
   object-fit: contain;
   border: 1px solid var(--app-border);
+}
+input[type='file'] {
+  max-width: 100%;
 }
 .hint {
   color: var(--app-text-secondary);

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { showError } from '@/api/feedback'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 async function logout() {
   try {
@@ -22,11 +23,25 @@ async function logout() {
     <header class="site-header">
       <div class="container header-inner">
         <RouterLink to="/" class="brand">校园失物招领</RouterLink>
-        <nav class="nav">
-          <RouterLink to="/">首页</RouterLink>
-          <RouterLink :to="{ name: 'items' }">浏览物品</RouterLink>
-          <RouterLink v-if="!auth.isAdmin" :to="{ name: 'item-publish' }">发布信息</RouterLink>
-          <RouterLink v-if="auth.isLoggedIn && !auth.isAdmin" :to="{ name: 'my-items' }"
+        <nav class="nav" aria-label="主导航">
+          <RouterLink to="/" :aria-current="route.name === 'home' ? 'page' : undefined"
+            >首页</RouterLink
+          >
+          <RouterLink
+            :to="{ name: 'items' }"
+            :aria-current="route.name === 'items' ? 'page' : undefined"
+            >浏览物品</RouterLink
+          >
+          <RouterLink
+            v-if="!auth.isAdmin"
+            :to="{ name: 'item-publish' }"
+            :aria-current="route.name === 'item-publish' ? 'page' : undefined"
+            >发布信息</RouterLink
+          >
+          <RouterLink
+            v-if="auth.isLoggedIn && !auth.isAdmin"
+            :to="{ name: 'my-items' }"
+            :aria-current="route.name === 'my-items' ? 'page' : undefined"
             >我的发布</RouterLink
           >
         </nav>
@@ -44,7 +59,7 @@ async function logout() {
         </div>
       </div>
     </header>
-    <main class="container page">
+    <main id="main-content" tabindex="-1" class="container page">
       <RouterView />
     </main>
   </div>

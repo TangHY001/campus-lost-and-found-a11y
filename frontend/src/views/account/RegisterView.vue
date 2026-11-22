@@ -5,6 +5,7 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 
 import { register, sendRegistrationCode } from '@/api/auth'
 import { describeError } from '@/api/feedback'
+import { announce } from '@/utils/a11y'
 import { textLength } from '@/utils/text'
 
 // FR-01 注册：学号、姓名、校园卡号须与虚拟名册一致；邮箱验证码为模拟发送。注册成功不自动登录
@@ -99,6 +100,8 @@ async function sendCode() {
     const result = await sendRegistrationCode(form.email.trim())
     startCountdown(result.retryAfterSeconds)
     ElMessage.success('验证码已发送（模拟发送）')
+    // 倒计时只是按钮文字在变，读屏不会主动念，这里单独播报一次
+    announce('验证码已发送，请到邮箱查看')
   } catch (error) {
     errorMessage.value = describeError(error)
   } finally {
@@ -158,44 +161,73 @@ onBeforeUnmount(() => clearInterval(timer))
         :model="form"
         :rules="rules"
         label-position="top"
+        hide-required-asterisk
         @submit.prevent="submit"
       >
-        <el-form-item label="学号" prop="studentId">
-          <el-input v-model="form.studentId" maxlength="32" inputmode="numeric" />
+        <el-form-item prop="studentId">
+          <template #label>学号<span class="required-mark" aria-hidden="true">*</span></template>
+          <el-input
+            v-model="form.studentId"
+            maxlength="32"
+            inputmode="numeric"
+            aria-required="true"
+          />
         </el-form-item>
-        <el-form-item label="姓名" prop="realName">
-          <el-input v-model="form.realName" maxlength="10" />
+        <el-form-item prop="realName">
+          <template #label>姓名<span class="required-mark" aria-hidden="true">*</span></template>
+          <el-input v-model="form.realName" maxlength="10" aria-required="true" />
         </el-form-item>
-        <el-form-item label="校园卡号" prop="campusCardNo">
-          <el-input v-model="form.campusCardNo" maxlength="32" />
+        <el-form-item prop="campusCardNo">
+          <template #label
+            >校园卡号<span class="required-mark" aria-hidden="true">*</span></template
+          >
+          <el-input v-model="form.campusCardNo" maxlength="32" aria-required="true" />
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="form.email" maxlength="254" autocomplete="email" />
+        <el-form-item prop="email">
+          <template #label>邮箱<span class="required-mark" aria-hidden="true">*</span></template>
+          <el-input
+            v-model="form.email"
+            maxlength="254"
+            autocomplete="email"
+            aria-required="true"
+          />
         </el-form-item>
-        <el-form-item label="验证码" prop="emailCode">
+        <el-form-item prop="emailCode">
+          <template #label>验证码<span class="required-mark" aria-hidden="true">*</span></template>
           <div class="code-row">
-            <el-input v-model="form.emailCode" maxlength="6" inputmode="numeric" />
+            <el-input
+              v-model="form.emailCode"
+              maxlength="6"
+              inputmode="numeric"
+              aria-required="true"
+            />
             <el-button :loading="sending" :disabled="countdown > 0" @click="sendCode">
               {{ countdown > 0 ? `${countdown} 秒后重发` : '获取验证码' }}
             </el-button>
           </div>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item prop="password">
+          <template #label>密码<span class="required-mark" aria-hidden="true">*</span></template>
           <el-input
             v-model="form.password"
             type="password"
             show-password
             maxlength="64"
             autocomplete="new-password"
+            aria-required="true"
           />
         </el-form-item>
-        <el-form-item label="确认密码" prop="confirmPassword">
+        <el-form-item prop="confirmPassword">
+          <template #label
+            >确认密码<span class="required-mark" aria-hidden="true">*</span></template
+          >
           <el-input
             v-model="form.confirmPassword"
             type="password"
             show-password
             maxlength="64"
             autocomplete="new-password"
+            aria-required="true"
           />
         </el-form-item>
         <el-form-item label="昵称（选填，公开显示）" prop="nickname">

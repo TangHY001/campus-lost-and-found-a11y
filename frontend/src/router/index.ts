@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import StudentLayout from '@/layouts/StudentLayout.vue'
 import { useAuthStore } from '@/stores/auth'
+import { announce, focusMainContent } from '@/utils/a11y'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -9,6 +10,8 @@ declare module 'vue-router' {
     requiresAuth?: boolean
     /** 需要管理员角色。 */
     requiresAdmin?: boolean
+    /** 页面名：用于 document.title，也是路由变化时朗读给屏幕阅读器的内容。 */
+    title?: string
   }
 }
 
@@ -20,42 +23,59 @@ const router = createRouter({
       path: '/',
       component: StudentLayout,
       children: [
-        { path: '', name: 'home', component: () => import('@/views/HomeView.vue') },
-        { path: 'items', name: 'items', component: () => import('@/views/item/ItemListView.vue') },
+        {
+          path: '',
+          name: 'home',
+          component: () => import('@/views/HomeView.vue'),
+          meta: { title: '首页' },
+        },
+        {
+          path: 'items',
+          name: 'items',
+          component: () => import('@/views/item/ItemListView.vue'),
+          meta: { title: '浏览物品' },
+        },
         {
           path: 'items/new',
           name: 'item-publish',
           component: () => import('@/views/item/ItemPublishView.vue'),
-          meta: { requiresAuth: true },
+          meta: { requiresAuth: true, title: '发布物品信息' },
         },
         {
           path: 'me/items',
           name: 'my-items',
           component: () => import('@/views/item/MyItemsView.vue'),
-          meta: { requiresAuth: true },
+          meta: { requiresAuth: true, title: '我的发布' },
         },
         {
           path: 'me/items/:itemId/edit',
           name: 'item-edit',
           component: () => import('@/views/item/ItemPublishView.vue'),
-          meta: { requiresAuth: true },
+          meta: { requiresAuth: true, title: '修改物品信息' },
         },
         {
           path: 'items/:itemId',
           name: 'item-detail',
           component: () => import('@/views/item/ItemDetailView.vue'),
+          meta: { title: '物品详情' },
         },
-        { path: 'login', name: 'login', component: () => import('@/views/account/LoginView.vue') },
+        {
+          path: 'login',
+          name: 'login',
+          component: () => import('@/views/account/LoginView.vue'),
+          meta: { title: '登录' },
+        },
         {
           path: 'register',
           name: 'register',
           component: () => import('@/views/account/RegisterView.vue'),
+          meta: { title: '注册' },
         },
         {
           path: 'me/profile',
           name: 'profile',
           component: () => import('@/views/personal/ProfileView.vue'),
-          meta: { requiresAuth: true },
+          meta: { requiresAuth: true, title: '个人资料' },
         },
       ],
     },
@@ -68,6 +88,7 @@ const router = createRouter({
           path: '',
           name: 'admin-home',
           component: () => import('@/views/admin/AdminHomeView.vue'),
+          meta: { title: '管理后台' },
         },
       ],
     },
@@ -75,6 +96,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),
+      meta: { title: '页面不存在' },
     },
   ],
 })
@@ -96,6 +118,19 @@ router.beforeEach(async (to) => {
   if (to.meta.requiresAdmin && !auth.isAdmin) {
     return { name: 'home' }
   }
+})
+
+/**
+ * 单页应用换页时浏览器不会自动更新标题、也不会移动焦点：
+ * 屏幕阅读器用户听不到“换页了”，键盘用户还得从头 Tab 一遍导航。
+ * 这里统一补上：改标题 → 播报页面名 → 把焦点交给主内容区。
+ */
+router.afterEach((to) => {
+  const pageName = to.meta.title ?? '校园失物招领'
+  document.title = pageName ? `${pageName} · 校园失物招领` : '校园失物招领'
+  announce(`${pageName}页面已加载`)
+  // 等新页面渲染完再移焦点，否则焦点会落在旧节点上
+  requestAnimationFrame(() => focusMainContent())
 })
 
 export default router
