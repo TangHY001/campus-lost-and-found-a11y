@@ -323,7 +323,8 @@ async function main() {
     console.log('ITEM_CREATED', created.status, m ? m[1] : created.text.slice(0, 200))
 
     // 4) 管理员
-    const adminOk = await loginAs(c, 'admin', 'whut@1024005014')
+    const adminPassword = process.env.A11Y_ADMIN_PASSWORD || ''
+    const adminOk = await loginAs(c, 'admin', adminPassword)
     console.log('ADMIN_LOGIN', adminOk)
     summary.push(await capture(c, 'admin', '/admin', { keys: true, steps: 14 }))
   } else if (mode === 'makeitem') {
